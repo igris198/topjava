@@ -11,7 +11,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<a href="/meals?action=add">Add Meal</a>
+<a href="meals?action=add">Add Meal</a>
 <br>
 <br>
 <table border="1" cellpadding="5">
