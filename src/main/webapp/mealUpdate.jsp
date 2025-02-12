@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="ru.javawebinar.topjava.model.Meal" %>
 <html lang="ru">
 <head>
     <title>Meal</title>
@@ -18,7 +17,7 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>Edit meal</h2>
+<h2>${meal.id == null ? 'Add meal' : 'Edit meal'}</h2>
 <form name="mealUpdate" method="post" action="meals">
     <input type="hidden" name="id" value=${meal.id}>
     <label for="datetime">DateTime: </label>

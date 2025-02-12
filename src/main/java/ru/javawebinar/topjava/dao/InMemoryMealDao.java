@@ -5,33 +5,31 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealDao implements Dao<Meal> {
-    private static final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
-    private static final AtomicInteger idCounter = new AtomicInteger(0);
+    private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
+    private final AtomicInteger idCounter = new AtomicInteger(0);
 
-    static {
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
-        addMeal(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
+    public InMemoryMealDao() {
+        List<Meal> mealList = Arrays.asList(
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000),
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500),
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100),
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000),
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500),
+            new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
+        );
+        mealList.forEach(this::add);
     }
 
-    private static Integer getNewIdCounterValue() {
+    private int getNewIdCounterValue() {
         return idCounter.incrementAndGet();
-    }
-
-    private static void addMeal(Meal obj) {
-        int id = getNewIdCounterValue();
-        Meal meal = new Meal(id, obj.getDateTime(), obj.getDescription(), obj.getCalories());
-        meals.put(id, meal);
     }
 
     @Override
@@ -53,13 +51,8 @@ public class InMemoryMealDao implements Dao<Meal> {
     }
 
     @Override
-    public synchronized Meal update(Meal obj) {
-        Integer id = obj.getId();
-        if (id != null && meals.get(id) != null) {
-            meals.put(id, obj);
-            return obj;
-        }
-        return null;
+    public Meal update(Meal obj) {
+        return meals.replace(obj.getId(), obj);
     }
 
     @Override

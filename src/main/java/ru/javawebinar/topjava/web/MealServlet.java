@@ -23,6 +23,8 @@ public class MealServlet extends HttpServlet {
 
     private static final String UPDATE_MEAL = "/mealUpdate.jsp";
     private static final String LIST_MEAL = "/meals.jsp";
+    private static final Integer CALORIES_PER_DAY = 2000;
+
     private Dao<Meal> mealDao;
 
     @Override
@@ -33,7 +35,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String forward = LIST_MEAL;
+        String forward = null;
         String action = req.getParameter("action");
         action = (action == null || action.isEmpty()) ? "list" : action;
         log.debug("mealServlet doGet. action={}, id={}", action, req.getParameter("id"));
@@ -42,6 +44,8 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 id = Integer.parseInt(req.getParameter("id"));
                 mealDao.delete(id);
+                log.debug("mealServlet doGet. Redirect to meals");
+                resp.sendRedirect("meals");
                 break;
             case "edit":
                 id = Integer.parseInt(req.getParameter("id"));
@@ -53,13 +57,11 @@ public class MealServlet extends HttpServlet {
                 forward = UPDATE_MEAL;
                 break;
             default:
-                req.setAttribute("mealsList", MealsUtil.filteredByStreams(mealDao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+                forward = LIST_MEAL;
+                req.setAttribute("mealsList", MealsUtil.filteredByStreams(mealDao.getAll(), LocalTime.MIN, LocalTime.MAX, CALORIES_PER_DAY));
                 break;
         }
-        if ("delete".equals(action)) {
-            log.debug("mealServlet doGet. Redirect to meals");
-            resp.sendRedirect("meals");
-        } else {
+        if (forward != null) {
             log.debug("mealServlet doGet. Forward to {}", forward);
             req.getRequestDispatcher(forward).forward(req, resp);
         }
@@ -67,6 +69,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         String idStr = req.getParameter("id");
         Integer id = (idStr == null || idStr.isEmpty()) ? null : Integer.parseInt(idStr);
 
