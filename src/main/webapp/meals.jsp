@@ -26,13 +26,13 @@
         <fieldset>
             <legend>Meal filter</legend>
             <label for="startDate">Date from (included): </label>
-            <input type="date" name = "startDate" id = "startDate">
+            <input type="date" name = "startDate" id = "startDate" value="${param.startDate}">
             <label for="endDate">Date to (included): </label>
-            <input type="date" name = "endDate" id = "endDate">
+            <input type="date" name = "endDate" id = "endDate" value="${param.endDate}">
             <label for="startTime">Time from (included): </label>
-            <input type="time" name = "startTime" id = "startTime">
+            <input type="time" name = "startTime" id = "startTime" value="${param.startTime}">
             <label for="endTime">Time to (not included): </label>
-            <input type="time" name = "endTime" id = "endTime">
+            <input type="time" name = "endTime" id = "endTime" value="${param.endTime}">
             <button type="submit">Filter</button>
         </fieldset>
     </form>
@@ -49,7 +49,7 @@
             <th></th>
         </tr>
         </thead>
-        <c:forEach items="${requestScope.meals}" var="meal">
+        <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>

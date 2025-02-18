@@ -9,11 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.meal.MealRestController;
-import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,7 +22,6 @@ import java.util.Objects;
 
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
-
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
@@ -32,20 +29,13 @@ public class MealServlet extends HttpServlet {
     private MealRestController controller;
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init();
+    public void init(ServletConfig config) {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-
-        AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
-        adminUserController.create(new User(null, "adminName", "admin@mail.ru", "password", Role.ADMIN));
-        adminUserController.create(new User(null, "userName", "user@mail.ru", "password", Role.USER));
-
         controller = appCtx.getBean(MealRestController.class);
     }
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
     }
 
@@ -94,11 +84,14 @@ public class MealServlet extends HttpServlet {
                 String endDateStr = request.getParameter("endDate");
                 String startTimeStr = request.getParameter("startTime");
                 String endTimeStr = request.getParameter("endTime");
-                LocalDate startDate = (startDateStr == null || startDateStr.isEmpty()) ? null : LocalDate.parse(startDateStr);
-                LocalDate endDate = (endDateStr == null || endDateStr.isEmpty()) ? null : LocalDate.parse(endDateStr);
-                LocalTime startTime = (startTimeStr == null || startTimeStr.isEmpty()) ? null : LocalTime.parse(startTimeStr);
-                LocalTime endTime = (endTimeStr == null || endTimeStr.isEmpty()) ? null : LocalTime.parse(endTimeStr);
+
+                LocalDate startDate = StringUtils.hasText(startDateStr) ? LocalDate.parse(startDateStr) : null;
+                LocalDate endDate = StringUtils.hasText(endDateStr) ? LocalDate.parse(endDateStr) : null;
+                LocalTime startTime = StringUtils.hasText(startTimeStr) ? LocalTime.parse(startTimeStr) : null;
+                LocalTime endTime = StringUtils.hasText(endTimeStr) ? LocalTime.parse(endTimeStr) : null;
+
                 log.info("doGet. getFiltered. startDateStr:{}, endDateStr:{}, startTimeStr:{}, endTimeStr:{}", startDateStr, endDateStr, startTimeStr, endTimeStr);
+
                 request.setAttribute("meals", controller.getFiltered(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;

@@ -5,13 +5,12 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 
 @Service
 public class MealService {
-
     private final MealRepository repository;
 
     public MealService(MealRepository repository) {
@@ -30,11 +29,11 @@ public class MealService {
         return checkNotFound(repository.get(id, userId), id);
     }
 
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         return repository.getAll(userId);
     }
 
-    public Collection<Meal> getFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
         return repository.getFilteredByDate(userId, startDate, endDate);
     }
 
