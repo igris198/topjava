@@ -42,7 +42,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getAdminMeal() {
+    public void get() {
         Meal meal = service.get(MealTestData.ADMIN_MEAL_ID, UserTestData.ADMIN_ID);
         MealTestData.assertMatch(meal, MealTestData.adminMeal);
     }
@@ -53,7 +53,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getWrongFood() {
+    public void getWrongMeal() {
         assertThrows(NotFoundException.class, () -> service.get(MealTestData.WRONG_MEAL_ID, UserTestData.USER_ID));
     }
 
@@ -69,7 +69,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void deleteWrongFood() {
+    public void deleteWrongMeal() {
         assertThrows(NotFoundException.class, () -> service.delete(MealTestData.WRONG_MEAL_ID, UserTestData.USER_ID));
     }
 
@@ -99,7 +99,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void getAllUserMeal() {
+    public void getAll() {
         List<Meal> meals = service.getAll(UserTestData.USER_ID);
         MealTestData.assertMatch(meals, MealTestData.userMeals);
     }
@@ -112,7 +112,7 @@ public class MealServiceTest {
     }
 
     @Test
-    public void updateNotFound() {
+    public void updateWrongUser() {
         Meal updatedMeal = MealTestData.getUpdated();
         assertThrows(NotFoundException.class, () -> service.update(updatedMeal, UserTestData.ADMIN_ID));
     }
