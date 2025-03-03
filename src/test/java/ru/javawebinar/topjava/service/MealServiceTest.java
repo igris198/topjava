@@ -21,10 +21,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -39,7 +35,9 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
-    private static final Map<String, Long> testDurationMap = new HashMap<>();
+
+    private static final StringBuilder testDuration = new StringBuilder("\nFinal result:");
+
     @Rule
     public TestRule testDurationCounter = new TestWatcher() {
         @Override
@@ -47,12 +45,16 @@ public class MealServiceTest {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    long startMs = System.currentTimeMillis();
-                    base.evaluate();
-                    long duration = System.currentTimeMillis() - startMs;
-                    String testName = description.getMethodName();
-                    testDurationMap.put(testName, duration);
-                    logger.info("Test name:{}, duration:{} ms.", testName, duration);
+                    long startNano = System.nanoTime();
+                    try {
+                        base.evaluate();
+                    }
+                    finally {
+                        long durationMs = Math.round((System.nanoTime() - startNano) / 1000000.0);
+                        String testName = description.getMethodName();
+                        testDuration.append(String.format("\n%-30s %s ms", testName, durationMs));
+                        logger.info("Test name:{}, duration:{} ms.", testName, durationMs);
+                    }
                 }
             };
         }
@@ -62,18 +64,7 @@ public class MealServiceTest {
 
     @AfterClass
     public static void printRuntimeCounter() {
-        logger.info("Final result:");
-        testDurationMap.forEach((testName, duration) -> logger.info("{} - {} ms.", testName, duration));
-    }
-
-    private Meal resetUser(Meal meal) {
-        meal.setUser(null);
-        return meal;
-    }
-
-    private List<Meal> resetUsers(List<Meal> meals) {
-        meals.forEach(this::resetUser);
-        return meals;
+        logger.info("{}", testDuration);
     }
 
     @Test
@@ -90,6 +81,7 @@ public class MealServiceTest {
     @Test
     public void deleteNotOwn() {
         assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
+        throw new RuntimeException("test");
     }
 
     @Test
@@ -98,8 +90,8 @@ public class MealServiceTest {
         int newId = created.id();
         Meal newMeal = getNew();
         newMeal.setId(newId);
-        MEAL_MATCHER.assertMatch(resetUser(created), newMeal);
-        MEAL_MATCHER.assertMatch(resetUser(service.get(newId, USER_ID)), newMeal);
+        MEAL_MATCHER.assertMatch(created, newMeal);
+        MEAL_MATCHER.assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
     @Test
@@ -110,7 +102,7 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        MEAL_MATCHER.assertMatch(resetUser(service.get(ADMIN_MEAL_ID, ADMIN_ID)), adminMeal1);
+        MEAL_MATCHER.assertMatch(service.get(ADMIN_MEAL_ID, ADMIN_ID), adminMeal1);
     }
 
     @Test
@@ -127,30 +119,32 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        MEAL_MATCHER.assertMatch(resetUser(service.get(MEAL1_ID, USER_ID)), getUpdated());
+        Meal m1 = service.get(MEAL1_ID, USER_ID);
+        Meal m2 = getUpdated();
+        MEAL_MATCHER.assertMatch(m1, m2);
     }
 
     @Test
     public void updateNotOwn() {
         assertThrows(NotFoundException.class, () -> service.update(meal1, ADMIN_ID));
-        MEAL_MATCHER.assertMatch(resetUser(service.get(MEAL1_ID, USER_ID)), meal1);
+        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
     }
 
     @Test
     public void getAll() {
-        MEAL_MATCHER.assertMatch(resetUsers(service.getAll(USER_ID)), meals);
+        MEAL_MATCHER.assertMatch(service.getAll(USER_ID), meals);
     }
 
     @Test
     public void getBetweenInclusive() {
-        MEAL_MATCHER.assertMatch(resetUsers(service.getBetweenInclusive(
+        MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
                         LocalDate.of(2020, Month.JANUARY, 30),
-                        LocalDate.of(2020, Month.JANUARY, 30), USER_ID)),
+                        LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
                 meal3, meal2, meal1);
     }
 
     @Test
     public void getBetweenWithNullDates() {
-        MEAL_MATCHER.assertMatch(resetUsers(service.getBetweenInclusive(null, null, USER_ID)), meals);
+        MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
     }
 }
