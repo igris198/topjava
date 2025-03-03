@@ -138,10 +138,7 @@ public class MealServiceTest {
 
     @Test
     public void getAll() {
-        List<Meal> tmpMeals = service.getAll(USER_ID).stream()
-                .peek(meal -> meal.setUser(null))
-                .collect(Collectors.toList());
-        MEAL_MATCHER.assertMatch(tmpMeals, meals);
+        MEAL_MATCHER.assertMatch(resetUsers(service.getAll(USER_ID)), meals);
     }
 
     @Test
