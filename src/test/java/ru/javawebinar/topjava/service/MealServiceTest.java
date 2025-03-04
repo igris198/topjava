@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
-import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Stopwatch;
@@ -41,38 +40,16 @@ public class MealServiceTest {
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, "succeeded", nanos);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, "skipped", nanos);
-        }
-
-        @Override
         protected void finished(long nanos, Description description) {
-            logInfo(description, "finished", nanos);
+            String testName = description.getMethodName();
+            long durationMs = TimeUnit.NANOSECONDS.toMillis(nanos);
+            logger.info("Test name:{} spent {} ms.", testName, durationMs);
+            testDuration.append(String.format("\n%-30s %s ms", testName, durationMs));
         }
     };
 
     @Autowired
     private MealService service;
-
-    private static void logInfo(Description description, String status, long nanos) {
-        String testName = description.getMethodName();
-        long durationMs = TimeUnit.NANOSECONDS.toMillis(nanos);
-        logger.info("Test name:{} {}", testName, status);
-        if ("finished".equals(status)) {
-            logger.info("Test name:{} spent {} ms.", testName, durationMs);
-            testDuration.append(String.format("\n%-30s %s ms", testName, durationMs));
-        }
-    }
 
     @AfterClass
     public static void printRuntimeCounter() {
