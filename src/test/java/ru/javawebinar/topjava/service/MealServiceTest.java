@@ -1,13 +1,12 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
+import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -39,28 +39,40 @@ public class MealServiceTest {
     private static final StringBuilder testDuration = new StringBuilder("\nFinal result:");
 
     @Rule
-    public TestRule testDurationCounter = new TestWatcher() {
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        public Statement apply(Statement base, Description description) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    long startNano = System.nanoTime();
-                    try {
-                        base.evaluate();
-                    }
-                    finally {
-                        long durationMs = Math.round((System.nanoTime() - startNano) / 1000000.0);
-                        String testName = description.getMethodName();
-                        testDuration.append(String.format("\n%-30s %s ms", testName, durationMs));
-                        logger.info("Test name:{}, duration:{} ms.", testName, durationMs);
-                    }
-                }
-            };
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, "succeeded", nanos);
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, "failed", nanos);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, "skipped", nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, "finished", nanos);
         }
     };
+
     @Autowired
     private MealService service;
+
+    private static void logInfo(Description description, String status, long nanos) {
+        String testName = description.getMethodName();
+        long durationMs = TimeUnit.NANOSECONDS.toMillis(nanos);
+        logger.info("Test name:{} {}", testName, status);
+        if ("finished".equals(status)) {
+            logger.info("Test name:{} spent {} ms.", testName, durationMs);
+            testDuration.append(String.format("\n%-30s %s ms", testName, durationMs));
+        }
+    }
 
     @AfterClass
     public static void printRuntimeCounter() {
@@ -81,7 +93,6 @@ public class MealServiceTest {
     @Test
     public void deleteNotOwn() {
         assertThrows(NotFoundException.class, () -> service.delete(MEAL1_ID, ADMIN_ID));
-        throw new RuntimeException("test");
     }
 
     @Test
@@ -102,7 +113,8 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        MEAL_MATCHER.assertMatch(service.get(ADMIN_MEAL_ID, ADMIN_ID), adminMeal1);
+        Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
+        MEAL_MATCHER.assertMatch(actual, adminMeal1);
     }
 
     @Test
@@ -119,9 +131,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        Meal m1 = service.get(MEAL1_ID, USER_ID);
-        Meal m2 = getUpdated();
-        MEAL_MATCHER.assertMatch(m1, m2);
+        MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
     }
 
     @Test
