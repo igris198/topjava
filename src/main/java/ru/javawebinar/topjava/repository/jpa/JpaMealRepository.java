@@ -34,10 +34,19 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
+        Meal meal = get(id, userId);
+        if (meal != null) {
+            em.remove(meal);
+            return true;
+        }
+        return false;
+/*
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
                 .setParameter("userId", userId)
                 .executeUpdate() != 0;
+
+ */
     }
 
     @Override

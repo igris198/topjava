@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.concurrent.TimeUnit;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -51,9 +52,20 @@ public class MealServiceTest {
     @Autowired
     private MealService service;
 
+    @Autowired
+    private UserService userService;
+
     @AfterClass
     public static void printRuntimeCounter() {
         logger.info("{}", testDuration);
+    }
+
+    @Test
+    public void deleteCascade() {
+        assertThatNoException().describedAs("The user must exist").isThrownBy(() -> userService.get(USER_ID));
+        service.delete(MEAL1_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
+        assertThatNoException().describedAs("The user must continue to exist").isThrownBy(() -> userService.get(USER_ID));
     }
 
     @Test
