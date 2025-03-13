@@ -55,7 +55,7 @@ public class UserService {
 
     @Profile(Profiles.DATAJPA)
     public User getWithMeal(int id) {
-        User user = repository.getWithMeal(id);
+        User user = repository.getWithMeals(id);
         return checkNotFound(user, id);
     }
 }
