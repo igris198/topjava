@@ -1,9 +1,11 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
@@ -22,6 +24,13 @@ import static ru.javawebinar.topjava.UserTestData.*;
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     protected UserService service;
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Before
+    public void setup() {
+        cacheManager.getCache("users").clear();
+    }
 
     @Test
     public void create() {
@@ -79,6 +88,22 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         List<User> all = service.getAll();
         USER_MATCHER.assertMatch(all, admin, guest, user);
     }
+
+
+    @Test
+    public void aCheckCacheClearUpdate() {
+        User updated = getUpdated();
+        service.update(updated);
+//        USER_MATCHER.assertMatch(service.get(USER_ID), getUpdated());
+        USER_MATCHER.assertMatch(service.getAll(), admin, guest, getUpdated());
+    }
+
+    @Test
+    public void bCheckCacheClearGetAll() {
+        List<User> all = service.getAll();
+        USER_MATCHER.assertMatch(all, admin, guest, user);
+    }
+
 
     @Test
     public void createWithException() {

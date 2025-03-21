@@ -9,9 +9,9 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.Set;
 
-public class ValidationUtil {
+public class JdbcValidationUtil {
     private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-    private static final Logger log = LoggerFactory.getLogger(ValidationUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(JdbcValidationUtil.class);
 
     public static <T> void validate(T t) {
         Set<ConstraintViolation<T>> violations = validator.validate(t);
