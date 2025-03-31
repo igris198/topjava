@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.format.Formatter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -18,7 +20,6 @@ public class DateTimeUtil {
     // DB doesn't support LocalDate.MIN/MAX
     private static final LocalDateTime MIN_DATE = LocalDateTime.of(1, 1, 1, 0, 0);
     private static final LocalDateTime MAX_DATE = LocalDateTime.of(3000, 1, 1, 0, 0);
-
     private DateTimeUtil() {
     }
 
@@ -42,6 +43,30 @@ public class DateTimeUtil {
     public static @Nullable
     LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.hasLength(str) ? LocalTime.parse(str) : null;
+    }
+
+    public static class CustomDateFormatter implements Formatter<LocalDate> {
+        @Override
+        public LocalDate parse(@Nullable String text, @Nullable Locale locale) {
+            return parseLocalDate(text);
+        }
+
+        @Override
+        public String print(LocalDate localDate, @Nullable Locale locale) {
+            return localDate.toString();
+        }
+    }
+
+    public static class CustomTimeFormatter implements Formatter<LocalTime> {
+        @Override
+        public LocalTime parse(@Nullable String text, @Nullable Locale locale) {
+            return parseLocalTime(text);
+        }
+
+        @Override
+        public String print(LocalTime localTime, @Nullable Locale locale) {
+            return localTime.toString();
+        }
     }
 }
 

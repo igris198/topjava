@@ -1,0 +1,279 @@
+{
+	"info": {
+		"_postman_id": "b71c4147-ff60-448e-a5a8-e98fb49fb621",
+		"name": "MealRestControllerTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12761021"
+	},
+	"item": [
+		{
+			"name": "getAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get100003",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/100003",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"100003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getNotFound",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateMeal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":null,\"dateTime\":\"2020-02-01T18:00:00\",\"description\":\"Созданный ужин\",\"calories\":300}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dublicateDateTimeCreate",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":null,\"dateTime\":\"2020-01-30T10:00:00\",\"description\":\"Созданный ужин\",\"calories\":300}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateMeal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\":null,\"dateTime\":\"2020-02-01T18:00:00\",\"description\":\"Созданный ужин\",\"calories\":300,\"user\":null}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete100003",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/100003",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"100003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteNotFound",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBetweenInclusive",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/100003",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"100003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBetweenWithNullDates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/filter",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"filter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testUTF",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/topjava/rest/meals/filter",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"topjava",
+						"rest",
+						"meals",
+						"filter"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
