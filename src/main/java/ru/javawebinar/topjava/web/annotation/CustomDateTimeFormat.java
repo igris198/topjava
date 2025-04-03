@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.annotation;
+package ru.javawebinar.topjava.web.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

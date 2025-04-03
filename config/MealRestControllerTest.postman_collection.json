@@ -252,28 +252,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "testUTF",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8081/topjava/rest/meals/filter",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8081",
-					"path": [
-						"topjava",
-						"rest",
-						"meals",
-						"filter"
-					]
-				}
-			},
-			"response": []
 		}
 	]
 }
