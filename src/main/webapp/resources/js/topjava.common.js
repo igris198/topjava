@@ -3,6 +3,10 @@ let form;
 function makeEditable(datatableApi) {
     ctx.datatableApi = datatableApi;
     form = $('#detailsForm');
+
+    $(".checkEnabled").click(function () {
+        checkEnabled($(this).closest('tr').attr("id"), $(this).find("input[type='checkbox']").is(':checked'));
+    });
     $(".delete").click(function () {
         if (confirm('Are you sure?')) {
             deleteRow($(this).closest('tr').attr("id"));
@@ -29,12 +33,6 @@ function deleteRow(id) {
     }).done(function () {
         updateTable();
         successNoty("Deleted");
-    });
-}
-
-function updateTable() {
-    $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
     });
 }
 

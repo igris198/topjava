@@ -5,6 +5,22 @@ const ctx = {
     ajaxUrl: userAjaxUrl
 };
 
+function updateTable() {
+    $.get(ctx.ajaxUrl, function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+    });
+}
+
+function checkEnabled(id, enabled) {
+    $.ajax({
+        url: ctx.ajaxUrl + id + (enabled ? "/enable" : "/disable"),
+        type: "PUT",
+    }).done(function () {
+        updateTable();
+        successNoty(enabled ? "Enabled" : "Disabled");
+    });
+}
+
 // $(document).ready(function () {
 $(function () {
     makeEditable(

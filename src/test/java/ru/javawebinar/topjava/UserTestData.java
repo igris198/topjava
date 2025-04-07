@@ -28,7 +28,7 @@ public class UserTestData {
 
     public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
-    public static final User guest = new User(GUEST_ID, "Guest", "guest@gmail.com", "guest");
+    public static final User guest = new User(GUEST_ID, "Guest", "guest@gmail.com", "guest", 2000, false, new Date(), Collections.emptyList());
 
     static {
         user.setMeals(meals);
@@ -47,6 +47,18 @@ public class UserTestData {
         updated.setPassword("newPass");
         updated.setEnabled(false);
         updated.setRoles(Collections.singletonList(Role.ADMIN));
+        return updated;
+    }
+
+    public static User getDisabled() {
+        User updated = new User(user);
+        updated.setEnabled(false);
+        return updated;
+    }
+
+    public static User getEnabled() {
+        User updated = new User(guest);
+        updated.setEnabled(true);
         return updated;
     }
 }
