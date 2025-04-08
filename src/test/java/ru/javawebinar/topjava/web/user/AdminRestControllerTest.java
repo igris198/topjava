@@ -97,7 +97,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void disable() throws Exception {
         User updated = getDisabled();
-        perform(MockMvcRequestBuilders.put(REST_URL + USER_ID + "/disable"))
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID + "/enable?isEnabled=false"))
                 .andExpect(status().isNoContent());
         USER_MATCHER.assertMatch(userService.get(USER_ID), updated);
     }
@@ -105,7 +105,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void enable() throws Exception {
         User updated = getEnabled();
-        perform(MockMvcRequestBuilders.put(REST_URL + GUEST_ID + "/enable"))
+        perform(MockMvcRequestBuilders.patch(REST_URL + GUEST_ID + "/enable?isEnabled=true"))
                 .andExpect(status().isNoContent());
         USER_MATCHER.assertMatch(userService.get(GUEST_ID), updated);
     }

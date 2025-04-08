@@ -1,7 +1,7 @@
-const userAjaxUrl = "ajax/meals/";
+const mealAjaxUrl = "ajax/meals/";
 
 const ctx = {
-    ajaxUrl: userAjaxUrl
+    ajaxUrl: mealAjaxUrl
 };
 
 function clearFilter() {
@@ -16,7 +16,7 @@ function updateTable() {
         url: ctx.ajaxUrl + "filter",
         data: $('#filter').serialize()
     }).done(function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        reloadData(data);
     });
 }
 
@@ -47,7 +47,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })

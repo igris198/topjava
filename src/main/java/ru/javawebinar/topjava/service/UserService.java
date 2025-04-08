@@ -54,20 +54,10 @@ public class UserService {
 
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
-    public void enable(int id) {
-        User user = repository.get(id);
-        Assert.notNull(user, "user must not be null");
-        user.setEnabled(true);
-        checkNotFound(repository.save(user), user.id());
-    }
-
-    @Transactional
-    @CacheEvict(value = "users", allEntries = true)
-    public void disable(int id) {
-        User user = repository.get(id);
-        Assert.notNull(user, "user must not be null");
-        user.setEnabled(false);
-        checkNotFound(repository.save(user), user.id());
+    public void setEnabled(int id, boolean isEnabled) {
+        User user = get(id);
+        user.setEnabled(isEnabled);
+        repository.save(user);
     }
 
     public User getWithMeals(int id) {

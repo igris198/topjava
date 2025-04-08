@@ -7,17 +7,21 @@ const ctx = {
 
 function updateTable() {
     $.get(ctx.ajaxUrl, function (data) {
-        ctx.datatableApi.clear().rows.add(data).draw();
+        reloadData(data);
     });
 }
 
 function checkEnabled(id, enabled) {
     $.ajax({
-        url: ctx.ajaxUrl + id + (enabled ? "/enable" : "/disable"),
-        type: "PUT",
-    }).done(function () {
-        updateTable();
-        successNoty(enabled ? "Enabled" : "Disabled");
+        url: ctx.ajaxUrl + id + "/enable?isEnabled=" + enabled,
+        type: "PATCH",
+        success: function () {
+            document.getElementById(id).setAttribute("data-user-enabled",enabled);
+            successNoty(enabled ? "Enabled" : "Disabled");
+        },
+        error: function () {
+            updateTable();
+        }
     });
 }
 
