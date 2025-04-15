@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealCreatingTo;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
@@ -48,11 +49,25 @@ public abstract class AbstractMealController {
         return service.create(meal, userId);
     }
 
+    public Meal create(MealCreatingTo mealCreatingTo) {
+        int userId = SecurityUtil.authUserId();
+        log.info("create {} for user {}", mealCreatingTo, userId);
+        checkIsNew(mealCreatingTo);
+        return service.create(MealsUtil.createNewFromTo(mealCreatingTo), userId);
+    }
+
     public void update(Meal meal, int id) {
         int userId = SecurityUtil.authUserId();
         log.info("update {} for user {}", meal, userId);
         assureIdConsistent(meal, id);
         service.update(meal, userId);
+    }
+
+    public void update(MealCreatingTo mealCreatingTo, int id) {
+        int userId = SecurityUtil.authUserId();
+        log.info("update {} for user {}", mealCreatingTo, userId);
+        assureIdConsistent(mealCreatingTo, id);
+        service.update(mealCreatingTo, userId);
     }
 
     /**
@@ -62,7 +77,7 @@ public abstract class AbstractMealController {
      * </ol>
      */
     public List<MealTo> getBetween(@Nullable LocalDate startDate, @Nullable LocalTime startTime,
-                                            @Nullable LocalDate endDate, @Nullable LocalTime endTime) {
+                                   @Nullable LocalDate endDate, @Nullable LocalTime endTime) {
         int userId = SecurityUtil.authUserId();
         log.info("getBetween dates({} - {}) time({} - {}) for user {}", startDate, endDate, startTime, endTime, userId);
 
