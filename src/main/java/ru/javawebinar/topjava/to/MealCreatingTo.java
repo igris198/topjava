@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class MealCreatingTo extends BaseTo {
     @NotNull
@@ -16,7 +15,7 @@ public class MealCreatingTo extends BaseTo {
     @Size(min = 2, max = 120, message = "length must be between 2 and 120 characters")
     private String description;
 
-    @Range(min = 10, max = 5000)
+    @Range(min = 10, max = 5000, message = "value must be between 10 and 5000")
     private int calories;
 
     public MealCreatingTo() {
@@ -26,40 +25,24 @@ public class MealCreatingTo extends BaseTo {
         return dateTime;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public int getCalories() {
+        return calories;
+    }
+
     public void setCalories(int calories) {
         this.calories = calories;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MealCreatingTo that = (MealCreatingTo) o;
-        return calories == that.calories &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(dateTime, that.dateTime) &&
-                Objects.equals(description, that.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, dateTime, description, calories);
     }
 
     @Override

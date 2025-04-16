@@ -42,15 +42,8 @@ public class MealsUtil {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 
-    public static Meal createNewFromTo(MealCreatingTo mealCreatingTo) {
-        return new Meal(null, mealCreatingTo.getDateTime(), mealCreatingTo.getDescription(), mealCreatingTo.getCalories());
-    }
-
-    public static Meal updateFromTo(Meal meal, MealCreatingTo mealCreatingTo) {
-        meal.setDateTime(mealCreatingTo.getDateTime());
-        meal.setDescription(mealCreatingTo.getDescription());
-        meal.setCalories(mealCreatingTo.getCalories());
-        return meal;
+    public static Meal createFromTo(MealCreatingTo mealCreatingTo) {
+        return new Meal(mealCreatingTo.getId(), mealCreatingTo.getDateTime(), mealCreatingTo.getDescription(), mealCreatingTo.getCalories());
     }
 
 }
