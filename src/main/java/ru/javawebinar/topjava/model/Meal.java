@@ -34,18 +34,18 @@ public class Meal extends AbstractBaseEntity {
     public static final String GET_BETWEEN = "Meal.getBetween";
 
     @Column(name = "date_time", nullable = false)
-    @NotNull
+    @NotNull(message = "Поле не должно быть пустым")
     @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
-    @NotBlank
-    @Size(min = 2, max = 120)
+    @NotBlank(message = "Поле не должно быть пустым")
+    @Size(min = 2, max = 120, message = "Количество символов должно быть между 2 и 120")
     private String description;
 
     @Column(name = "calories", nullable = false)
-    @NotNull
-    @Range(min = 10, max = 5000)
+    @NotNull(message = "Значение не должно быть пустым")
+    @Range(min = 10, max = 5000, message = "Значение должно быть между 10 и 5000")
     private Integer calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
